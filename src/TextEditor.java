@@ -17,18 +17,37 @@ public class TextEditor {
         //create the text area component
         JTextArea textArea = new JTextArea();
 
-        //Create Dropdown for File Button
-        String[] fileOptions = {"Open", "Save", "Save As", "Print", "Exit"};
-        JComboBox<String> fileDropDown = new JComboBox<>(fileOptions);
+        //Create DropDownButtons
+        DropDownButton fileButton = new DropDownButton("File");
+        DropDownButton editButton = new DropDownButton("Edit");
+
+        //Create MenuItems for File Button
+        JMenuItem openItem = new JMenuItem("Open");
+        fileButton.addMenuItem(openItem);
+        JMenuItem saveItem = new JMenuItem("Save");
+        fileButton.addMenuItem(saveItem);
+        JMenuItem printItem = new JMenuItem("Print");
+        fileButton.addMenuItem(printItem);
+        JMenuItem exitItem = new JMenuItem("Exit");
+        fileButton.addMenuItem(exitItem);
+
+        //Create MenuItems for Edit Button
+        JMenuItem cutItem = new JMenuItem("Cut");
+        editButton.addMenuItem(cutItem);
+        JMenuItem copyItem = new JMenuItem("Copy");
+        editButton.addMenuItem(copyItem);
+        JMenuItem pasteItem = new JMenuItem("Paste");
+        editButton.addMenuItem(pasteItem);
+        JMenuItem deleteItem = new JMenuItem("Delete");
+        editButton.addMenuItem(deleteItem);
 
 
-        //Create Taskbar buttons
-        //JButton fileButton = new JButton("File");
-        JButton editButton = new JButton("Edit");
-
-        tbPanel.add(fileDropDown);
+        //add buttons to panel
+        tbPanel.add(fileButton);
         tbPanel.add(editButton);
+        //add panel to toolbar
         tb.add(tbPanel);
+        //add toolbar and textArea to frame
         frame.add(tb, BorderLayout.NORTH);
         frame.add(textArea, BorderLayout.CENTER);
 
