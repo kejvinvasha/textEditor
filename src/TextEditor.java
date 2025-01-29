@@ -1,5 +1,8 @@
 import java.awt.*;
-import java.io.*;
+import java.awt.event.*;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import javax.swing.*;
 
 public class TextEditor {
@@ -22,8 +25,34 @@ public class TextEditor {
         DropDownButton editButton = new DropDownButton("Edit");
 
         //Create MenuItems for File Button
+
+        //Open Button and functionality
         JMenuItem openItem = new JMenuItem("Open");
         fileButton.addMenuItem(openItem);
+        //Open Event Listener
+        openItem.addActionListener(new ActionListener() {
+            //When button is clicked perform action
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //choose file and record if it was successful
+                JFileChooser chooser = new JFileChooser();
+                int result = chooser.showOpenDialog(frame);
+
+                //if successful grab the content of the file and copy into textArea
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    File file = chooser.getSelectedFile();
+                    String title = file.getName().split("\\.")[0];
+                    frame.setTitle("Text Editor - " + title);
+                    try {
+                        String content = new String(Files.readAllBytes(file.toPath()));
+                        textArea.setText(content);
+                    } catch (IOException err) {
+                        JOptionPane.showMessageDialog(frame, "Error reading file");
+                    }
+                }
+            }
+        });
+
         JMenuItem saveItem = new JMenuItem("Save");
         fileButton.addMenuItem(saveItem);
         JMenuItem printItem = new JMenuItem("Print");
