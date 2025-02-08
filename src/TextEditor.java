@@ -83,18 +83,13 @@ public class TextEditor {
         });
         //adding save as functionality
         saveAsItem.addActionListener(new ActionListener() {
-            //adding three file extensions
+            //adding txt file extension
             final FileNameExtensionFilter txtFilter = new FileNameExtensionFilter("Text File", "txt");
-            final FileNameExtensionFilter pdfFilter = new FileNameExtensionFilter("PDF File", "pdf");
-            final FileNameExtensionFilter docxFilter = new FileNameExtensionFilter("Word Document File", "docx");
             @Override
             public void actionPerformed(ActionEvent e) {
                 //creating fileChooser
                 JFileChooser saveChooser = new JFileChooser();
                 //adding the extensions to the chooser and selecting txt as default
-                saveChooser.addChoosableFileFilter(txtFilter);
-                saveChooser.addChoosableFileFilter(pdfFilter);
-                saveChooser.addChoosableFileFilter(docxFilter);
                 saveChooser.setFileFilter(txtFilter);
                 int result = saveChooser.showSaveDialog(frame);
 
