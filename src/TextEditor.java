@@ -1,14 +1,20 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class TextEditor {
-    public static void main(String[] args) {
+    private File file;
+
+    public TextEditor() {
+        String frameTitle = "Text Editor";
+
         //create frame component
-        JFrame frame = new JFrame("Text Editor");
+        JFrame frame = new JFrame(frameTitle);
 
         //create toolbar component
         JToolBar tb = new JToolBar();
@@ -40,7 +46,7 @@ public class TextEditor {
 
                 //if successful grab the content of the file and copy into textArea
                 if (result == JFileChooser.APPROVE_OPTION) {
-                    File file = chooser.getSelectedFile();
+                    file = chooser.getSelectedFile();
                     String title = file.getName().split("\\.")[0];
                     frame.setTitle("Text Editor - " + title);
                     try {
@@ -53,8 +59,62 @@ public class TextEditor {
             }
         });
 
+        //adding the save and saveAs button
         JMenuItem saveItem = new JMenuItem("Save");
         fileButton.addMenuItem(saveItem);
+        JMenuItem saveAsItem = new JMenuItem("Save As");
+        fileButton.addMenuItem(saveAsItem);
+        //adding save functionality
+        saveItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //if the file is not already open, use the save as functionality
+                if (frameTitle.equals(frame.getTitle())) {
+                    saveAsItem.doClick();
+                }else {
+                    //use a fileWriter to write the new changes
+                    try (FileWriter writer = new FileWriter(file)) {
+                        writer.write(textArea.getText());
+                    } catch (IOException err) {
+                        System.out.println("An error occurred while saving the file.");
+                    }
+                }
+            }
+        });
+        //adding save as functionality
+        saveAsItem.addActionListener(new ActionListener() {
+            //adding three file extensions
+            final FileNameExtensionFilter txtFilter = new FileNameExtensionFilter("Text File", "txt");
+            final FileNameExtensionFilter pdfFilter = new FileNameExtensionFilter("PDF File", "pdf");
+            final FileNameExtensionFilter docxFilter = new FileNameExtensionFilter("Word Document File", "docx");
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //creating fileChooser
+                JFileChooser saveChooser = new JFileChooser();
+                //adding the extensions to the chooser and selecting txt as default
+                saveChooser.addChoosableFileFilter(txtFilter);
+                saveChooser.addChoosableFileFilter(pdfFilter);
+                saveChooser.addChoosableFileFilter(docxFilter);
+                saveChooser.setFileFilter(txtFilter);
+                int result = saveChooser.showSaveDialog(frame);
+
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    //getting the extension and fileName of the new file
+                    String extension = ((FileNameExtensionFilter)saveChooser.getFileFilter()).getExtensions()[0];
+                    String fileName = saveChooser.getSelectedFile().getAbsolutePath() + "." + extension;
+                    //creating new file and setting the new window title
+                    file = new File(fileName);
+                    String title = file.getName().split("\\.")[0];
+                    frame.setTitle("Text Editor - " + title);
+                    //create the file using FileWriter
+                    try (FileWriter writer = new FileWriter(file)) {
+                        writer.write(textArea.getText());
+                    } catch (IOException err) {
+                        System.out.println("An error occurred while saving the file.");
+                    }
+                }
+            }
+        });
         JMenuItem printItem = new JMenuItem("Print");
         fileButton.addMenuItem(printItem);
         JMenuItem exitItem = new JMenuItem("Exit");
