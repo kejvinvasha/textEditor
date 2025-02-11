@@ -32,6 +32,10 @@ public class TextEditor {
 
         //Create MenuItems for File Button
 
+        //New Button
+        JMenuItem newItem = new JMenuItem("New");
+        fileButton.addMenuItem(newItem);
+
         //Open Button and functionality
         JMenuItem openItem = new JMenuItem("Open");
         fileButton.addMenuItem(openItem);
@@ -64,6 +68,62 @@ public class TextEditor {
         fileButton.addMenuItem(saveItem);
         JMenuItem saveAsItem = new JMenuItem("Save As");
         fileButton.addMenuItem(saveAsItem);
+        //adding new file functionality
+        newItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //check if there is text in the file already
+                if (!textArea.getText().isEmpty()) {
+                    //check if the file is an already saved file or not
+                    if (frameTitle.equals(frame.getTitle())) {
+                        //create a JDialog to act as modal
+                        JDialog modal = new JDialog(frame, "Unsaved Changes", true);
+                        //create both save and don't save button and their functionalities
+                        JButton saveModal = new JButton("Save Changes");
+                        JButton dontSaveModal = new JButton("Don't Save");
+                        saveModal.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                //since file is not saved before do save as, close modal and reset frame and text
+                                saveAsItem.doClick();
+                                modal.setVisible(false);
+                                modal.dispose();
+                                textArea.setText("");
+                                frame.setTitle(frameTitle);
+                            }
+                        });
+                        dontSaveModal.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                //close modal and reset text
+                                modal.setVisible(false);
+                                modal.dispose();
+                                textArea.setText("");
+                            }
+                        });
+                        //make panel and add buttons and label
+                        JPanel modalPanel = new JPanel();
+                        modalPanel.add(new JLabel("There are unsaved changes in this file, would you like to save?"));
+                        modalPanel.add(dontSaveModal, BorderLayout.SOUTH);
+                        modalPanel.add(saveModal, BorderLayout.SOUTH);
+                        //add panel to modal dialog and set the needed preferences of the modal
+                        modal.add(modalPanel);
+                        modal.setSize(400, 200);
+                        modal.setLocationRelativeTo(frame);
+                        modal.setVisible(true);
+                    } else {
+                        //if a file is already opened save the file and reset text and frame
+                        saveItem.doClick();
+                        textArea.setText("");
+                        frame.setTitle(frameTitle);
+                    }
+                } else {
+                    //if text is empty, reset text and frame title
+                    textArea.setText("");
+                    frame.setTitle(frameTitle);
+                }
+            }
+        });
         //adding save functionality
         saveItem.addActionListener(new ActionListener() {
             @Override
