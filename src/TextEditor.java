@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.print.PrinterException;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -28,7 +29,9 @@ public class TextEditor {
 
         //Create DropDownButtons
         DropDownButton fileButton = new DropDownButton("File");
+        fileButton.setFocusable(false);
         DropDownButton editButton = new DropDownButton("Edit");
+        editButton.setFocusable(false);
 
         //Create MenuItems for File Button
 
@@ -170,10 +173,28 @@ public class TextEditor {
                 }
             }
         });
+        //adding print button and functionality
         JMenuItem printItem = new JMenuItem("Print");
         fileButton.addMenuItem(printItem);
+        printItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    textArea.print();
+                } catch (PrinterException err) {
+                    System.out.println("Error occurred while printing the file.");
+                }
+            }
+        });
+        //adding the exit button and functionality
         JMenuItem exitItem = new JMenuItem("Exit");
         fileButton.addMenuItem(exitItem);
+        exitItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
 
         //Create MenuItems for Edit Button
         JMenuItem cutItem = new JMenuItem("Cut");
