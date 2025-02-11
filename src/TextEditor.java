@@ -10,6 +10,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class TextEditor {
     private File file;
+    private String savedText;
 
     public TextEditor() {
         String frameTitle = "Text Editor";
@@ -198,13 +199,60 @@ public class TextEditor {
 
         //Create MenuItems for Edit Button
         JMenuItem cutItem = new JMenuItem("Cut");
+        //add cut button and its functionality
         editButton.addMenuItem(cutItem);
+        cutItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //check if any text is selected
+                if (textArea.getSelectedText() != null) {
+                    //save the selected text in variable and then edit the text area to delete the selected text
+                    savedText = textArea.getSelectedText();
+                    int length = savedText.length();
+                    textArea.setText(textArea.getText().substring(0, textArea.getText().length() - length));
+                }else {
+                    //if no text selected saved text becomes empty string
+                    savedText = "";
+                }
+            }
+        });
+        //add copy button and its functionality
         JMenuItem copyItem = new JMenuItem("Copy");
         editButton.addMenuItem(copyItem);
+        copyItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //same copy logic as cut
+                if (textArea.getSelectedText() != null) {
+                    savedText = textArea.getSelectedText();
+                } else {
+                    savedText = "";
+                }
+            }
+        });
+        //add paste button and its functionality
         JMenuItem pasteItem = new JMenuItem("Paste");
         editButton.addMenuItem(pasteItem);
+        pasteItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //same paste logic as cut
+                if (savedText != null) {
+                    textArea.setText(textArea.getText() + savedText);
+                }
+            }
+        });
+        //add delete button and its functionality
         JMenuItem deleteItem = new JMenuItem("Delete");
         editButton.addMenuItem(deleteItem);
+        deleteItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //same delete logic as cut
+                int length = textArea.getSelectedText().length();
+                textArea.setText(textArea.getText().substring(0, textArea.getText().length() - length));
+            }
+        });
 
 
         //add buttons to panel
