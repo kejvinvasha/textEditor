@@ -1,4 +1,7 @@
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.*;
 import java.awt.print.PrinterException;
 import java.io.File;
@@ -10,7 +13,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class TextEditor {
     private File file;
-    private String savedText;
+    private final Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 
     public TextEditor() {
         String frameTitle = "Text Editor";
@@ -207,12 +210,12 @@ public class TextEditor {
                 //check if any text is selected
                 if (textArea.getSelectedText() != null) {
                     //save the selected text in variable and then edit the text area to delete the selected text
-                    savedText = textArea.getSelectedText();
-                    int length = savedText.length();
+                    clipboard.setContents(new StringSelection(textArea.getSelectedText()), null);
+                    int length = textArea.getSelectedText().length();
                     textArea.setText(textArea.getText().substring(0, textArea.getText().length() - length));
                 }else {
                     //if no text selected saved text becomes empty string
-                    savedText = "";
+                    clipboard.setContents(new StringSelection(""), null);
                 }
             }
         });
@@ -224,9 +227,9 @@ public class TextEditor {
             public void actionPerformed(ActionEvent e) {
                 //same copy logic as cut
                 if (textArea.getSelectedText() != null) {
-                    savedText = textArea.getSelectedText();
+                    clipboard.setContents(new StringSelection(textArea.getSelectedText()), null);
                 } else {
-                    savedText = "";
+                    clipboard.setContents(new StringSelection(""), null);
                 }
             }
         });
@@ -237,9 +240,13 @@ public class TextEditor {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //same paste logic as cut
-                if (savedText != null) {
+                try {
+                    String savedText = (String) clipboard.getData(DataFlavor.stringFlavor);
                     textArea.setText(textArea.getText() + savedText);
+                } catch (Exception err) {
+                    System.out.println("An error occurred while pasting the file.");
                 }
+
             }
         });
         //add delete button and its functionality
@@ -253,6 +260,9 @@ public class TextEditor {
                 textArea.setText(textArea.getText().substring(0, textArea.getText().length() - length));
             }
         });
+
+        //KeyStroke copyShortCut = KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.CTRL_DOWN_MASK);
+
 
 
         //add buttons to panel
